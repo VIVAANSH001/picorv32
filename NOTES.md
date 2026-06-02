@@ -39,4 +39,4 @@ sudo apt install gcc-riscv64-unknown-elf -y
 make test TOOLCHAIN_PREFIX=/usr/bin/riscv64-unknown-elf-
 ```
 
-- ALRIGHT IT WORKS!!!
+- ALRIGHT IT WORKS! `ALL TESTS PASSED`
