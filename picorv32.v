@@ -648,6 +648,8 @@ module picorv32 #(
 	reg instr_lb, instr_lh, instr_lw, instr_lbu, instr_lhu, instr_sb, instr_sh, instr_sw;
 	reg instr_addi, instr_slti, instr_sltiu, instr_xori, instr_ori, instr_andi, instr_slli, instr_srli, instr_srai;
 	reg instr_add, instr_sub, instr_sll, instr_slt, instr_sltu, instr_xor, instr_srl, instr_sra, instr_or, instr_and;
+	// This is where we make the first change by adding the flags for each instruction
+	reg instr_rev,instr_abs, instr_min, instr_max, instr_satadd;
 	reg instr_rdcycle, instr_rdcycleh, instr_rdinstr, instr_rdinstrh, instr_ecall_ebreak, instr_fence;
 	reg instr_getq, instr_setq, instr_retirq, instr_maskirq, instr_waitirq, instr_timer;
 	wire instr_trap;
@@ -674,6 +676,14 @@ module picorv32 #(
 	reg is_lbu_lhu_lw;
 	reg is_alu_reg_imm;
 	reg is_alu_reg_reg;
+	// This is where we make the second change by creating a flag for the group of instructions called is_custom
+	reg is_custom;
+
+	//We create or declare the wires required for satadd
+	wire [32:0] satadd_sum;
+	wire satadd_overflow;
+	wire [31:0] satadd_result;
+
 	reg is_compare;
 
 	assign instr_trap = (CATCH_ILLINSN || WITH_PCPI) && !{instr_lui, instr_auipc, instr_jal, instr_jalr,
@@ -876,6 +886,9 @@ module picorv32 #(
 			is_sb_sh_sw                  <= mem_rdata_latched[6:0] == 7'b0100011;
 			is_alu_reg_imm               <= mem_rdata_latched[6:0] == 7'b0010011;
 			is_alu_reg_reg               <= mem_rdata_latched[6:0] == 7'b0110011;
+
+			// This is where I make the third change setting the is_custom flag high if the opcode matches the custom 0 --> 0x0B
+			is_custom <= (mem_rdata_latched[6:0] == 7'b0001011);
 
 			{ decoded_imm_j[31:20], decoded_imm_j[10:1], decoded_imm_j[11], decoded_imm_j[19:12], decoded_imm_j[0] } <= $signed({mem_rdata_latched[31:12], 1'b0});
 
