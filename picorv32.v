@@ -1769,6 +1769,7 @@ module picorv32 #(
 						reg_sh <= decoded_rs2;
 						cpu_state <= cpu_state_shift;
 					end
+					// 8th and final change is fixing the routing issue of rev and abs
 					is_jalr_addi_slti_sltiu_xori_ori_andi, is_slli_srli_srai && BARREL_SHIFTER, instr_rev || instr_abs: begin
 						`debug($display("LD_RS1: %2d 0x%08x", decoded_rs1, cpuregs_rs1);)
 						reg_op1 <= cpuregs_rs1;
