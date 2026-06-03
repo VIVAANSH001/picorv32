@@ -648,6 +648,7 @@ module picorv32 #(
 	reg instr_lb, instr_lh, instr_lw, instr_lbu, instr_lhu, instr_sb, instr_sh, instr_sw;
 	reg instr_addi, instr_slti, instr_sltiu, instr_xori, instr_ori, instr_andi, instr_slli, instr_srli, instr_srai;
 	reg instr_add, instr_sub, instr_sll, instr_slt, instr_sltu, instr_xor, instr_srl, instr_sra, instr_or, instr_and;
+
 	// This is where we make the first change by adding the flags for each instruction
 	reg instr_rev,instr_abs, instr_min, instr_max, instr_satadd;
 	reg instr_rdcycle, instr_rdcycleh, instr_rdinstr, instr_rdinstrh, instr_ecall_ebreak, instr_fence;
@@ -1272,6 +1273,11 @@ module picorv32 #(
 			alu_shr = $signed({instr_sra || instr_srai ? reg_op1[31] : 1'b0, reg_op1}) >>> reg_op2[4:0];
 		end
 	end endgenerate
+
+	// This where I make the fifth change by assigning values to the wires of satadd right outside the always block
+	assign satadd_sum = {reg_op1[31],reg_op1} + {reg_op2[31],reg_op2};
+    assign satadd_overflow = (reg_op1[31] == reg_op2[31]) && (satadd_sum[31] != reg_op1[31]);
+    assign satadd_result = satadd_overflow ? (reg_op1[31] ? 32'h80000000 : 32'h7FFFFFFF):satadd_sum[31:0];
 
 	always @* begin
 		alu_out_0 = 'bx;
