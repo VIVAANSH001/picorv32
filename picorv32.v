@@ -1314,7 +1314,30 @@ module picorv32 #(
 				alu_out = alu_shl;
 			BARREL_SHIFTER && (instr_srl || instr_srli || instr_sra || instr_srai):
 				alu_out = alu_shr;
+
+			// The 5th change being made is adding the actual logic to compute the instructions
+			instr_rev: begin
+				begin : rev_block
+				integer i;
+				for(i = 0;i < 32;i = i + 1)begin
+					alu_out[i]=reg_op1[31-i];
+				end
+				end
+			end
+			instr_abs:begin
+				alu_out = reg_op1[31] ? (~reg_op1 + 1) : reg_op1;
+			end
+			instr_min: begin
+				alu_out = $signed(reg_op1) < $signed(reg_op2) ? reg_op1 : reg_op2;
+			end
+			instr_max: begin
+				alu_out = $signed(reg_op1) > $signed(reg_op2) ? reg_op1 : reg_op2;
+			end
+			instr_satadd: begin
+				alu_out = satadd_result;
+			end
 		endcase
+
 
 `ifdef RISCV_FORMAL_BLACKBOX_ALU
 		alu_out_0 = $anyseq;
