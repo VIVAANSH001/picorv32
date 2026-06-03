@@ -695,6 +695,9 @@ module picorv32 #(
 			instr_rdcycle, instr_rdcycleh, instr_rdinstr, instr_rdinstrh, instr_fence,
 			instr_getq, instr_setq, instr_retirq, instr_maskirq, instr_waitirq, instr_timer,
 			instr_rev, instr_abs, instr_min, instr_max, instr_satadd};
+	
+	// So this is where I made the 7th change by far the hardest to debug as I didnt know it existed
+
 
 	wire is_rdcycle_rdcycleh_rdinstr_rdinstrh;
 	assign is_rdcycle_rdcycleh_rdinstr_rdinstrh = |{instr_rdcycle, instr_rdcycleh, instr_rdinstr, instr_rdinstrh};
@@ -1766,7 +1769,7 @@ module picorv32 #(
 						reg_sh <= decoded_rs2;
 						cpu_state <= cpu_state_shift;
 					end
-					is_jalr_addi_slti_sltiu_xori_ori_andi, is_slli_srli_srai && BARREL_SHIFTER: begin
+					is_jalr_addi_slti_sltiu_xori_ori_andi, is_slli_srli_srai && BARREL_SHIFTER, instr_rev || instr_abs: begin
 						`debug($display("LD_RS1: %2d 0x%08x", decoded_rs1, cpuregs_rs1);)
 						reg_op1 <= cpuregs_rs1;
 						dbg_rs1val <= cpuregs_rs1;
