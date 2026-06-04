@@ -107,3 +107,7 @@ a0 written: 0x00000002 --> SATADD(5,-3) = 2 correct
 ```
 
 - After that ran `make test TOOLCHAIN_PREFIX=/usr/bin/riscv64-unknown-elf-` and got ALL TESTS PASSED. This is the regression test, it proves adding our instructions did not break any of the roughly 45 standard instructions.
+
+## FINAL THANK YOU!!
+
+- Thanks to whoever took their time going through this work of mine it taught me a lot especially on the path instructions take within a CPU and I hope to learn a lot more in the coming years about this fascinating field.
